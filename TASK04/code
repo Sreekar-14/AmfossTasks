@@ -1,1 +1,29 @@
+import requests
+from telegram.ext import Application, CommandHandler, MessageHandler, filters
+
+# API code and Telegram token
+TOKEN = ""
+GOOGLE_BOOKS_API_KEY = ""
+
+def get_books_by_genre(genre):
+    url = f"https://www.googleapis.com/books/v1/volumes?q=subject:{genre}&key={GOOGLE_BOOKS_API_KEY}"
+    response = requests.get(url)
+    data = response.json()
+    books = data.get("items", [])
+    return books
+
+
+
+def format_book_details(book):
+    title = book["volumeInfo"]["title"]
+    author = book["volumeInfo"]["authors"][0]
+    description = book["volumeInfo"]["description"]
+    published_year = book["volumeInfo"]["publishedDate"][:4]
+    language = book["volumeInfo"]["language"]
+    preview = book["volumeInfo"]["previewLink"]
+    return f"{title} by {author}\n{description}\nPublished: {published_year}\nLanguage: {language}\nPreview: {preview}"
+
+async def handle_start(update, context):
+    await context.bot.send_message(chat_id=, text="Welcome to BookBot! Use /help for commands.")
+
 
